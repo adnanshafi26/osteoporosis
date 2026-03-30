@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>AI Bone Osteoporosis Detection</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+/* ORIGINAL BODY STYLE */
+
+body{
+margin:0;
+font-family:Segoe UI,Arial;
+overflow:hidden;
+background:linear-gradient(120deg,#f4f6f9,#eef3ff);
+animation:bgmove 10s infinite alternate;
+}
+
+@keyframes bgmove{
+0%{background-position:left}
+100%{background-position:right}
+}
+
+/* NEW ANIMATED MEDICAL GRADIENT BACKGROUND */
+
+body{
+background:linear-gradient(-45deg,#eef3ff,#dfe9f3,#e0f7fa,#f5f7fa);
+background-size:400% 400%;
+animation:gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* FLOATING MEDICAL ICONS */
+
+.medical-bg-icons{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
+z-index:0;
+}
+
+.medical-bg-icons img{
+position:absolute;
+width:60px;
+opacity:0.15;
+animation:floatMedical 20s linear infinite;
+}
+
+/* Different positions */
+
+.medical-bg-icons img:nth-child(1){ left:5%; animation-duration:18s;}
+.medical-bg-icons img:nth-child(2){ left:15%; animation-duration:22s;}
+.medical-bg-icons img:nth-child(3){ left:25%; animation-duration:20s;}
+.medical-bg-icons img:nth-child(4){ left:40%; animation-duration:24s;}
+.medical-bg-icons img:nth-child(5){ left:55%; animation-duration:26s;}
+.medical-bg-icons img:nth-child(6){ left:70%; animation-duration:19s;}
+.medical-bg-icons img:nth-child(7){ left:82%; animation-duration:23s;}
+.medical-bg-icons img:nth-child(8){ left:92%; animation-duration:21s;}
+
+@keyframes floatMedical{
+0%{transform:translateY(110vh) rotate(0deg);}
+50%{transform:translateY(50vh) rotate(180deg);}
+100%{transform:translateY(-120vh) rotate(360deg);}
+}
+
+
+/* SLIDER */
+
+.slider{
+width:100vw;
+height:100vh;
+overflow:hidden;
+position:relative;
+z-index:1;
+}
+
+.slides{
+display:flex;
+width:400%;
+height:100%;
+transition:0.7s ease;
+}
+
+.slide{
+width:100vw;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:flex-start;
+align-items:center;
+padding-top:40px;
+text-align:center;
+animation:fadeIn 0.8s ease;
+}
+
+.auth-slide{
+justify-content:center;
+padding-top:0;
+}
+
+/* FADE ANIMATION */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+h1{
+font-size:40px;
+color:#2c3e50;
+margin-bottom:15px;
+text-shadow:0 0 8px rgba(52,152,219,0.2);
+}
+
+h2{
+font-size:28px;
+color:#34495e;
+margin-bottom:20px;
+}
+
+p{
+max-width:650px;
+font-size:16px;
+line-height:1.6;
+color:#555;
+}
+
+/* FLOATING HERO IMAGE */
+
+.hero-img{
+width:260px;
+margin-top:30px;
+}
+
+@keyframes floatHero{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-12px);}
+100%{transform:translateY(0px);}
+}
+
+/* FORM CARD */
+
+.form-card{
+background:rgba(255,255,255,0.8);
+padding:35px;
+border-radius:14px;
+box-shadow:0 20px 40px rgba(0,0,0,0.15);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,0.4);
+display:flex;
+flex-direction:column;
+align-items:center;
+width:320px;
+transition:0.3s;
+}
+
+.form-card:hover{
+transform:translateY(-5px);
+}
+
+/* FORM ELEMENT WRAPPER */
+
+.field{
+width:260px;
+margin:8px 0;
+}
+
+/* INPUTS */
+
+.field input,
+.field select{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:14px;
+transition:0.25s;
+}
+
+.field input:focus,
+.field select:focus{
+border-color:#3498db;
+box-shadow:0 0 6px rgba(52,152,219,0.3);
+outline:none;
+}
+
+/* PASSWORD BOX */
+
+.password-box{
+position:relative;
+}
+
+.password-box input{
+padding-right:55px;
+}
+
+.toggle-password{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+font-size:13px;
+color:#3498db;
+}
+
+/* REMEMBER ME */
+
+.remember-box{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+margin-top:8px;
+font-size:14px;
+color:#555;
+}
+
+/* BUTTONS */
+
+button{
+padding:12px 22px;
+margin:10px;
+border:none;
+border-radius:8px;
+background:linear-gradient(135deg,#3498db,#5dade2);
+color:white;
+font-size:15px;
+cursor:pointer;
+transition:0.25s;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.nav-btn{
+background:#27ae60;
+}
+
+.nav-btn:hover{
+background:#1e8449;
+}
+
+.btn-group{
+margin-top:10px;
+display:flex;
+justify-content:center;
+}
+
+.learn-content{
+max-width:850px;
+width:80%;
+font-size:15px;
+line-height:1.7;
+text-align:left;
+margin-top:15px;
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.1);
+max-height:60vh;
+overflow-y:auto;
+}
+
+.learn-content ul{
+padding-left:20px;
+}
+
+.learn-content li{
+margin-bottom:12px;
+}
+
+/* Rotating background icons */
+
+.rotating-icons img{
+position:fixed;
+width:140px;
+opacity:0.05;
+z-index:0;
+animation:rotateIcon 40s linear infinite;
+}
+
+.rotating-icons img:nth-child(1){
+top:10%;
+left:5%;
+}
+
+.rotating-icons img:nth-child(2){
+bottom:10%;
+right:5%;
+}
+
+@keyframes rotateIcon{
+0%{
+transform:rotate(0deg);
+}
+100%{
+transform:rotate(360deg);
+}
+}
+
+</style>
+</head>
+<body>
+
+<div class="medical-bg-icons">
+
+<img src="https://cdn-icons-png.flaticon.com/512/387/387561.png">
+<img src="https://cdn-icons-png.flaticon.com/512/2785/2785482.png">
+<img src="https://cdn-icons-png.flaticon.com/512/2966/2966484.png">
+<img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png">
+<img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png">
+<img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png">
+<img src="https://cdn-icons-png.flaticon.com/512/3774/3774296.png">
+<img src="https://cdn-icons-png.flaticon.com/512/3774/3774293.png">
+
+</div>
+
+<div class="slider">
+<div class="slides" id="slides">
+
+<!-- INTRO -->
+<div class="slide">
+<img src="https://cdn-icons-png.flaticon.com/512/2966/2966484.png" width="90">
+<h1>AI Based Bone Osteoporosis Detection</h1>
+<p>
+This AI-powered medical system helps detect osteoporosis risk,
+bone density issues, and possible fractures using patient clinical
+data and medical X-ray analysis.
+</p>
+
+<img src="https://cdn-icons-png.flaticon.com/512/387/387561.png" class="hero-img">
+
+<div class="btn-group">
+<button onclick="nextSlide()">Sign Up</button>
+<button onclick="goLogin()">Sign In</button>
+<button onclick="goInfo()">Learn About Osteoporosis</button>
+</div>
+
+</div>
+
+<!-- REST OF YOUR CODE REMAINS EXACTLY SAME -->
+
+<!-- SIGNUP -->
+
+<div class="slide auth-slide">
+
+<div class="form-card">
+
+<h2>Create Account</h2>
+
+<div class="field">
+<input id="name" placeholder="Full Name">
+</div>
+
+<div class="field">
+<input id="email" placeholder="Email Address">
+</div>
+
+<div class="field password-box">
+<input id="password" type="password" placeholder="Password">
+<span class="toggle-password" onclick="togglePassword('password',this)">Show</span>
+</div>
+
+<div class="field password-box">
+<input id="confirm_password" type="password" placeholder="Confirm Password">
+<span class="toggle-password" onclick="togglePassword('confirm_password',this)">Show</span>
+</div>
+
+<div class="field">
+<select id="role" onchange="toggleDoctorField()">
+<option value="patient">Patient</option>
+<option value="doctor">Doctor</option>
+</select>
+</div>
+
+<div class="field">
+<select id="specialization" style="display:none;">
+<option value="">Select Doctor Type</option>
+<option value="knee">Knee Specialist</option>
+<option value="hip">Hip Specialist</option>
+<option value="spine">Spine Specialist</option>
+<option value="wrist">Wrist Specialist</option>
+</select>
+</div>
+
+<div class="btn-group">
+<button onclick="register()">Register</button>
+<button class="nav-btn" onclick="prevSlide()">Back</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- LOGIN -->
+
+<div class="slide auth-slide">
+
+<div class="form-card">
+
+<h2>Login</h2>
+
+<div class="field">
+<input id="login_email" placeholder="Email Address">
+</div>
+
+<div class="field password-box">
+<input id="login_password" type="password" placeholder="Password">
+<span class="toggle-password" onclick="togglePassword('login_password',this)">Show</span>
+</div>
+
+<div class="remember-box">
+<input type="checkbox" id="rememberMe">
+<label for="rememberMe">Remember Me</label>
+</div>
+
+<div class="btn-group">
+<button id="loginBtn" onclick="login()">Login</button>
+<button class="nav-btn" onclick="prevSlide()">Back</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- LEARN -->
+
+<div class="slide">
+
+<h2 style="margin-top:20px;">Understanding Osteoporosis</h2>
+
+<div class="learn-content">
+
+<ul>
+<li>Osteoporosis is a bone disease that makes bones weak and fragile.</li>
+<li>The condition occurs when bone density decreases faster than bone formation.</li>
+<li>It commonly affects older adults and women after menopause.</li>
+<li>Common fracture areas include hip, spine, wrist and knee joints.</li>
+<li>Early diagnosis helps prevent severe fractures.</li>
+<li>Bones lose calcium and essential minerals, making them porous and weak.</li>
+<li>It is often called a “silent disease” because symptoms appear in later stages.</li>
+<li>Common early signs include back pain, loss of height, and stooped posture.</li>
+<li>Low intake of calcium and vitamin D increases the risk of osteoporosis.</li>
+<li>Lack of physical activity leads to weaker bones over time.</li>
+<li>Smoking and excessive alcohol consumption can accelerate bone loss.</li>
+<li>Family history can increase the chances of developing osteoporosis.</li>
+<li>It can be diagnosed using a Bone Mineral Density (BMD) test like DEXA scan.</li>
+<li>Regular weight-bearing exercises help improve bone strength.</li>
+<li>A balanced diet with dairy products, leafy vegetables, and nuts supports bone health.</li>
+<li>Medications can help slow down bone loss and reduce fracture risk.</li>
+<li>Fall prevention is important to avoid fractures in affected individuals.</li>
+<li>Men can also develop osteoporosis, though it is more common in women.</li>
+<li>Maintaining a healthy lifestyle helps in managing the condition effectively.</li>
+<li>Early detection and treatment reduce the risk of severe complications.</li>
+</ul>
+
+</div>
+
+<div class="btn-group">
+<button class="nav-btn" onclick="prevSlide()">Back</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- YOUR ORIGINAL SCRIPT REMAINS UNCHANGED -->
+
+<script>
+
+/* YOUR ORIGINAL JAVASCRIPT */
+
+let slideIndex=0
+let slides=document.getElementById("slides")
+
+function updateSlide(){
+slides.style.transform="translateX(-"+(slideIndex*100)+"vw)"
+}
+
+function nextSlide(){
+slideIndex=1
+updateSlide()
+}
+
+function goLogin(){
+slideIndex=2
+updateSlide()
+}
+
+function goInfo(){
+slideIndex=3
+updateSlide()
+}
+
+function prevSlide(){
+slideIndex=0
+updateSlide()
+}
+
+function toggleDoctorField(){
+let role=document.getElementById("role").value
+let spec=document.getElementById("specialization")
+spec.style.display = role==="doctor" ? "block":"none"
+}
+
+function togglePassword(id,el){
+let input=document.getElementById(id)
+if(input.type==="password"){
+input.type="text"
+el.innerText="Hide"
+}else{
+input.type="password"
+el.innerText="Show"
+}
+}
+
+function register(){
+
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
+let confirm=document.getElementById("confirm_password").value
+let role=document.getElementById("role").value
+let specialization=document.getElementById("specialization").value
+
+let emailPattern=/^[^ ]+@[^ ]+\.[a-z]{2,3}$/
+
+if(!email.match(emailPattern)){
+alert("Please enter a valid email address")
+return
+}
+
+if(password.length<6){
+alert("Password must be at least 6 characters")
+return
+}
+
+if(password!==confirm){
+alert("Passwords do not match")
+return
+}
+
+if(role=="doctor" && specialization==""){
+alert("Please select doctor specialization")
+return
+}
+
+fetch("/register",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+name:document.getElementById("name").value,
+email:email,
+password:password,
+role:role,
+specialization:specialization
+})
+
+})
+
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status=="registered"){
+
+alert("Account created successfully. Please login.")
+
+slideIndex=2
+updateSlide()
+
+}else{
+alert("Registration failed")
+}
+
+})
+
+}
+
+function login(){
+
+let btn=document.getElementById("loginBtn")
+
+btn.innerText="Logging in..."
+btn.disabled=true
+
+fetch("/login",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:document.getElementById("login_email").value,
+password:document.getElementById("login_password").value,
+remember:document.getElementById("rememberMe").checked
+})
+
+})
+
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status=="success"){
+window.location="/dashboard"
+}else{
+alert("Invalid login credentials")
+}
+
+btn.innerText="Login"
+btn.disabled=false
+
+})
+
+}
+
+</script>
+
+</body>
+</html>

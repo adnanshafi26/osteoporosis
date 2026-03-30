@@ -1,0 +1,148 @@
+/* Body */
+
+body{
+font-family: Arial, sans-serif;
+margin:0;
+background:#f4f6f9;
+}
+
+/* Header */
+
+header{
+position:fixed;
+top:0;
+width:100%;
+background:#2c3e50;
+color:white;
+padding:10px;
+text-align:center;
+z-index:1000;
+box-shadow:0px 2px 6px rgba(0,0,0,0.2);
+}
+
+header h1{
+margin:0;
+font-size:20px;
+}
+
+/* Dashboard layout */
+
+.dashboard{
+display:flex;
+margin-top:50px;
+height:calc(100vh - 50px);
+}
+
+/* Sidebar */
+
+.sidebar{
+width:220px;
+background:#34495e;
+color:white;
+padding:20px;
+position:fixed;
+top:50px;
+bottom:0;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:25px;
+}
+
+.sidebar ul{
+list-style:none;
+padding:0;
+}
+
+.sidebar li{
+margin:18px 0;
+}
+
+.sidebar a{
+color:white;
+text-decoration:none;
+font-size:16px;
+padding:6px;
+display:block;
+border-radius:5px;
+}
+
+.sidebar a:hover{
+background:#1abc9c;
+}
+
+/* Content */
+
+.content{
+margin-left:240px;
+padding:35px;
+width:calc(100% - 240px);
+overflow:auto;
+}
+
+/* Summary Cards */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,160px);
+gap:15px;
+margin-bottom:25px;
+justify-content:center;
+}
+
+/* Individual Card */
+
+.card{
+background:white;
+padding:12px;
+border-radius:8px;
+box-shadow:0px 0px 6px rgba(0,0,0,0.1);
+text-align:center;
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-3px);
+box-shadow:0px 4px 10px rgba(0,0,0,0.15);
+}
+
+.card h3{
+font-size:14px;
+margin:0;
+color:#2c3e50;
+}
+
+.card p{
+margin-top:6px;
+font-size:18px;
+font-weight:bold;
+color:#27ae60;
+}
+
+/* Info Sections */
+
+.section{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+.section h2{
+margin-top:0;
+color:#2c3e50;
+}
+
+.section h3{
+margin-top:15px;
+color:#34495e;
+}
+
+/* Lists */
+
+ul{
+line-height:1.8;
+}
+

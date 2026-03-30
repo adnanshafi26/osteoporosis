@@ -1,0 +1,1 @@
+console.log("Osteoporosis Detection System Loaded");

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>X-Ray Analysis Result</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial, sans-serif;
+background:#f4f6f9;
+}
+
+/* Header */
+
+header{
+background:#2c3e50;
+color:white;
+padding:16px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+position:relative;
+}
+
+/* Logout */
+
+.logout-container{
+position:absolute;
+right:25px;
+top:12px;
+}
+
+.logout-btn{
+background:#e74c3c;
+color:white;
+border:none;
+padding:8px 16px;
+border-radius:6px;
+cursor:pointer;
+font-size:14px;
+}
+
+.logout-btn:hover{
+background:#c0392b;
+}
+
+/* Container */
+
+.container{
+width:900px;
+margin:auto;
+margin-top:30px;
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 0 12px rgba(0,0,0,0.1);
+text-align:center;
+}
+
+/* Result section */
+
+.result-box{
+margin-top:20px;
+padding:20px;
+background:#ecf0f1;
+border-radius:10px;
+text-align:left;
+font-size:18px;
+line-height:1.8;
+}
+
+/* Image */
+
+.result-img{
+margin-top:20px;
+max-width:100%;
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Buttons */
+
+.button-row{
+display:flex;
+gap:15px;
+margin-top:25px;
+justify-content:center;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+.dashboard-btn{
+background:#3498db;
+color:white;
+}
+
+.dashboard-btn:hover{
+background:#2980b9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+AI X-Ray Bone Analysis Result
+
+<div class="logout-container">
+<a href="/logout">
+<button class="logout-btn">Logout</button>
+</a>
+</div>
+
+</header>
+
+
+<div class="container">
+
+<h2>AI Diagnostic Result</h2>
+
+<div class="result-box">
+
+<p><b>Detected Bone:</b> <span id="boneType"></span></p>
+
+<p><b>Osteoporosis Detection:</b> <span id="osteoporosis"></span></p>
+
+<p><b>Fracture Detection:</b> <span id="fracture"></span></p>
+
+<p><b>Future Fracture Risk:</b> <span id="futureRisk"></span></p>
+
+</div>
+
+<img id="resultImage" class="result-img">
+
+<div class="button-row">
+
+<a href="/dashboard">
+<button class="dashboard-btn">Back to Dashboard</button>
+</a>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* Load analysis results from localStorage */
+
+document.getElementById("boneType").innerText =
+localStorage.getItem("xrayBone")
+
+document.getElementById("osteoporosis").innerText =
+localStorage.getItem("xrayOsteoporosis")
+
+document.getElementById("fracture").innerText =
+localStorage.getItem("xrayFracture")
+
+document.getElementById("futureRisk").innerText =
+localStorage.getItem("xrayFutureRisk")
+
+/* Load result image */
+
+document.getElementById("resultImage").src =
+localStorage.getItem("xrayImage")
+
+</script>
+
+</body>
+
+</html>

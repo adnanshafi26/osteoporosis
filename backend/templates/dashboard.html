@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>AI Osteoporosis Dashboard</title>
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Segoe UI, Arial;
+background:#f4f6f9;
+}
+
+/* Header */
+
+header{
+height:70px;
+background:#2c3e50;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:600;
+}
+
+/* Layout */
+
+.dashboard{
+display:flex;
+height:calc(100vh - 70px);
+}
+
+/* Sidebar */
+
+.sidebar{
+width:220px;
+background:#34495e;
+color:white;
+padding:25px;
+position:fixed;
+top:70px;
+bottom:0;
+left:0;
+}
+
+.sidebar h2{
+margin-bottom:25px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar li{
+margin-bottom:15px;
+}
+
+.sidebar a{
+color:white;
+text-decoration:none;
+font-size:16px;
+display:block;
+padding:8px 10px;
+border-radius:6px;
+transition:0.2s;
+}
+
+.sidebar a:hover{
+background:#1abc9c;
+}
+
+/* Content */
+
+.content{
+margin-left:240px;
+padding:40px;
+width:calc(100% - 240px);
+overflow-y:auto;
+}
+
+/* Cards */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+margin-bottom:40px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+text-align:center;
+}
+
+.card h3{
+font-size:18px;
+color:#555;
+margin-bottom:10px;
+}
+
+.card p{
+font-size:26px;
+font-weight:bold;
+color:#27ae60;
+}
+
+/* Sections */
+
+.section{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+margin-bottom:25px;
+}
+
+.section h2{
+margin-bottom:15px;
+color:#2c3e50;
+}
+
+.section p{
+margin-bottom:8px;
+font-size:16px;
+}
+
+.section ul{
+padding-left:20px;
+line-height:1.8;
+}
+
+/* Table */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+table th{
+background:#2c3e50;
+color:white;
+padding:10px;
+}
+
+table td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+table tr:hover{
+background:#f1f1f1;
+}
+
+/* Empty table */
+
+.no-data{
+text-align:center;
+padding:20px;
+color:#777;
+font-style:italic;
+}
+
+/* Logout */
+
+.logout-container{
+position:absolute;
+top:20px;
+right:30px;
+}
+
+.logout-btn{
+background:#e74c3c;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.logout-btn:hover{
+background:#c0392b;
+}
+
+/* Chatbot */
+
+.chatbot-icon{
+position:fixed;
+bottom:25px;
+right:25px;
+width:65px;
+height:65px;
+cursor:pointer;
+z-index:1000;
+}
+
+.chatbot-icon img{
+width:100%;
+height:100%;
+}
+
+.chatbox{
+position:fixed;
+bottom:100px;
+right:25px;
+width:320px;
+height:420px;
+background:white;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+display:none;
+flex-direction:column;
+z-index:1000;
+}
+
+.chat-header{
+background:#2c3e50;
+color:white;
+padding:12px;
+border-top-left-radius:10px;
+border-top-right-radius:10px;
+font-weight:bold;
+}
+
+.chat-messages{
+flex:1;
+padding:10px;
+overflow-y:auto;
+font-size:14px;
+}
+
+.chat-input{
+display:flex;
+border-top:1px solid #ddd;
+}
+
+.chat-input input{
+flex:1;
+border:none;
+padding:10px;
+font-size:14px;
+}
+
+.chat-input button{
+background:#3498db;
+border:none;
+color:white;
+padding:10px 15px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+AI-Based Osteoporosis Detection System
+</header>
+
+<div class="dashboard">
+
+<div class="logout-container">
+<a href="/logout">
+<button class="logout-btn">Logout</button>
+</a>
+</div>
+
+<div class="sidebar">
+<h2>Navigation</h2>
+
+<ul>
+<li><a href="/dashboard">Dashboard</a></li>
+<li><a href="/upload">Predict Patient</a></li>
+<li><a href="/upload_xray">X-ray Analysis</a></li>
+</ul>
+
+</div>
+
+<div class="content">
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Patients</h3>
+<p>{{ data.total }}</p>
+</div>
+
+<div class="card">
+<h3>High Risk Cases</h3>
+<p>{{ data.high }}</p>
+</div>
+
+<div class="card">
+<h3>Low Risk Cases</h3>
+<p>{{ data.low }}</p>
+</div>
+
+<div class="card">
+<h3>Avg Bone Density</h3>
+<p>{{ data.avg_density }}</p>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>Patient Records</h2>
+
+{% if data.patients and data.patients|length > 0 %}
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Age</th>
+<th>Gender</th>
+<th>BMI</th>
+<th>Bone Density</th>
+<th>Bone Type</th>
+<th>Prediction</th>
+<th>Fracture Risk</th>
+</tr>
+
+{% for p in data.patients %}
+
+<tr>
+
+<td>{{p.id}}</td>
+<td>{{p.age}}</td>
+<td>{{p.gender}}</td>
+<td>{{p.bmi}}</td>
+<td>{{p.bone_density}}</td>
+<td>{{p.bone_type}}</td>
+<td>{{p.prediction}}</td>
+<td>{{p.fracture_risk}}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<div class="no-data">
+No patient records available for your specialization.
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="section">
+<h2>Bone Risk Insights</h2>
+<p><b>Most Common Osteoporosis Bones:</b> Hip, Spine, Wrist</p>
+<p><b>Most Fracturing Bone:</b> Hip</p>
+</div>
+
+<div class="section">
+<h2>About Osteoporosis</h2>
+<p>
+Osteoporosis is a condition where bones become weak and brittle due to reduced bone mineral density.
+This increases fracture risk, especially in the hip, spine, and wrist.
+Early detection using AI systems can help doctors identify high-risk patients and prevent fractures.
+</p>
+</div>
+
+<div class="section">
+<h2>Healthy BMI Levels</h2>
+<ul>
+<li>Underweight: BMI below 18.5</li>
+<li>Normal BMI: 18.5 – 24.9</li>
+<li>Overweight: 25 – 29.9</li>
+<li>Obese: 30 and above</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Bone Density Levels</h2>
+<ul>
+<li>Healthy: above 0.75</li>
+<li>Moderate Risk: 0.60 – 0.75</li>
+<li>High Risk: below 0.60</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Recommended Nutrients</h2>
+<ul>
+<li>Calcium: 1000 – 1200 mg/day</li>
+<li>Vitamin D: 600 – 800 IU/day</li>
+<li>Magnesium and Zinc support bone metabolism</li>
+</ul>
+</div>
+
+</div>
+</div>
+<script>
+
+function toggleChat(){
+
+let box=document.getElementById("chatbox")
+
+box.style.display = box.style.display==="flex" ? "none":"flex"
+box.style.flexDirection="column"
+
+let messages=document.getElementById("chatMessages")
+
+if(messages.dataset.opened!="true"){
+
+messages.innerHTML += "<p><b>Assistant:</b> Welcome! I am here to help you. How can I assist you today?</p>"
+
+messages.dataset.opened="true"
+
+messages.scrollTop = messages.scrollHeight
+
+}
+
+}
+
+function sendMessage(){
+
+let input=document.getElementById("userInput")
+let msg=input.value.trim()
+
+if(msg==="") return
+
+let messages=document.getElementById("chatMessages")
+
+messages.innerHTML += "<p><b>You:</b> "+msg+"</p>"
+
+let typing = document.createElement("p")
+typing.id="typing"
+typing.innerHTML="<i>Assistant is typing...</i>"
+
+messages.appendChild(typing)
+
+messages.scrollTop = messages.scrollHeight
+
+fetch("/chatbot",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+})
+.then(res=>res.json())
+.then(data=>{
+
+let typing=document.getElementById("typing")
+if(typing) typing.remove()
+
+messages.innerHTML += "<p><b>Assistant:</b> "+data.reply+"</p>"
+messages.scrollTop = messages.scrollHeight
+
+})
+.catch(error=>{
+
+let typing=document.getElementById("typing")
+if(typing) typing.remove()
+
+messages.innerHTML += "<p><b>Assistant:</b> Sorry, something went wrong.</p>"
+})
+
+input.value=""
+
+}
+
+document.getElementById("userInput").addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+sendMessage()
+}
+
+})
+
+</script>
+</body>
+</html>
