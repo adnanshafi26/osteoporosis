@@ -255,36 +255,7 @@ def upload_xray():
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
-# --------------------------------
-# AI BONE HEALTH CHAT ASSISTANT
-# --------------------------------
-@app.route("/chatbot", methods=["POST"])
-def chatbot():
 
-    data = request.get_json()
-    msg = data.get("message", "")
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful medical assistant specialized in bone health, osteoporosis, diet, and exercise."
-                },
-                {
-                    "role": "user",
-                    "content": msg
-                }
-            ]
-        )
-
-        reply = response.choices[0].message.content
-
-        return jsonify({"reply": reply})
-
-    except Exception as e:
-        return jsonify({"reply": "Error: " + str(e)})
 # --------------------------------
 # RUN SERVER
 # --------------------------------
