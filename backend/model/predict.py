@@ -10,174 +10,56 @@ model = joblib.load(MODEL_PATH)
 scaler = load_scaler("model/scaler.pkl")
 
 
+def get_prediction(features):
+    features = np.array(features).reshape(1, -1)
+    features_scaled = scaler.transform(features)
+    return int(model.predict(features_scaled)[0])
+
+
 # -----------------------------------------
-# Existing Osteoporosis Prediction (UNCHANGED)
+# Existing Osteoporosis Prediction
 # -----------------------------------------
 def predict_osteoporosis(features):
-
-    features = np.array(features).reshape(1, -1)
-
-    # Scale features before prediction
-    features_scaled = scaler.transform(features)
-
-    prediction = model.predict(features_scaled)
-
-    if prediction[0] == 1:
-        return "High Risk of Osteoporosis"
-    else:
-        return "Low Risk of Osteoporosis"
+    pred = get_prediction(features)
+    labels = {1: "High Risk of Osteoporosis", 0: "Low Risk of Osteoporosis"}
+    return labels.get(pred)
 
 
 # -----------------------------------------
 # New Feature: Early Fracture Risk Prediction
 # -----------------------------------------
 def predict_fracture_risk(features):
+    pred = get_prediction(features)
+    labels = {1: "High Future Fracture Risk", 0: "Low Future Fracture Risk"}
+    return labels.get(pred)
 
-    age = float(features[0])
-    bmi = float(features[2])
-    bone_density = float(features[3])
-    calcium = float(features[4])
-    vitamin_d = float(features[5])
 
-    score = 0
-
-    # Age factor
-    if age > 65:
-        score += 2
-    elif age > 50:
-        score += 1
-
-    # Bone density factor
-    if bone_density < 0.60:
-        score += 2
-    elif bone_density < 0.75:
-        score += 1
-
-    # BMI factor
-    if bmi < 18.5:
-        score += 1
-
-    # Calcium factor
-    if calcium < 800:
-        score += 1
-
-    # Vitamin D factor
-    if vitamin_d < 20:
-        score += 1
-
-    if score >= 4:
-        return "High Future Fracture Risk"
-    elif score >= 2:
-        return "Moderate Future Fracture Risk"
-    else:
-        return "Low Future Fracture Risk"
-    
 # -----------------------------------------
 # Multi-Bone Analysis System
 # -----------------------------------------
-
 def multi_bone_analysis(bone_predictions):
-
-    """
-    bone_predictions example:
-    {
-        "hip": "High Risk of Osteoporosis",
-        "spine": "Low Risk of Osteoporosis",
-        "wrist": "High Risk of Osteoporosis",
-        "knee": "Low Risk of Osteoporosis"
+    counts = list(bone_predictions.values()).count("High Risk of Osteoporosis")
+    scores = {
+        0: "Healthy Bone Condition",
+        1: "Mild Bone Weakness",
+        2: "Moderate Bone Weakness"
     }
-    """
+    return scores.get(counts, "Severe Overall Bone Weakness")
 
-    risk_score = 0
-
-    for bone in bone_predictions.values():
-        if "High" in bone:
-            risk_score += 1
-
-    if risk_score >= 3:
-        return "Severe Overall Bone Weakness"
-    elif risk_score >= 2:
-        return "Moderate Bone Weakness"
-    elif risk_score == 1:
-        return "Mild Bone Weakness"
-    else:
-        return "Healthy Bone Condition"
 
 def calculate_bone_health_score(features):
-
-    age = features[0]
-    bmi = features[2]
-    bone_density = features[3]
-    calcium = features[4]
-    vitamin_d = features[5]
-
-    score = 100
-
-    # Age factor
-    if age > 65:
-        score -= 20
-    elif age > 50:
-        score -= 10
-
-    # BMI factor
-    if bmi < 18.5:
-        score -= 15
-    elif bmi > 30:
-        score -= 10
-
-    # Bone density factor
-    if bone_density < 0.6:
-        score -= 30
-    elif bone_density < 0.75:
-        score -= 15
-
-    # Calcium intake
-    if calcium < 800:
-        score -= 10
-
-    # Vitamin D
-    if vitamin_d < 600:
-        score -= 10
-
-    if score < 0:
-        score = 0
-
-    if score > 100:
-        score = 100
-
-    return score
+    pred = get_prediction(features)
+    scores = {1: 40, 0: 90}
+    return scores.get(pred)
 
 
 # --------------------------------
 # Multi-Disease Bone Analysis
 # --------------------------------
 def predict_bone_diseases(features):
-
-    age = features[0]
-    bmi = features[2]
-    bone_density = features[3]
-    calcium = features[4]
-    vitamin_d = features[5]
-
-    diseases = []
-
-    # Osteoporosis
-    if bone_density < 0.60:
-        diseases.append("Osteoporosis")
-
-    # Osteopenia (mild bone loss)
-    elif bone_density >= 0.60 and bone_density < 0.75:
-        diseases.append("Osteopenia")
-
-    # Arthritis related bone loss
-    if age > 50 and bmi > 27:
-        diseases.append("Possible Arthritis Related Bone Loss")
-
-    # Bone tumor suspicion
-    if bone_density > 1.5:
-        diseases.append("Possible Bone Tumor Signs")
-
-    if not diseases:
-        diseases.append("No major bone disease detected")
-
-    return diseases
+    pred = get_prediction(features)
+    diseases = {
+        1: ["Osteoporosis", "High Bone Loss Risk"],
+        0: ["No major bone disease detected"]
+    }
+    return diseases.get(pred)
