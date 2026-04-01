@@ -23,18 +23,22 @@ def analyze():
         return jsonify({"error": "Invalid file"}), 400
 
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    
+    bone_type = request.form.get("bone_type")
 
     file.save(file_path)
 
-    result = analyze_xray(file_path)
+    result = analyze_xray(file_path, manual_bone=bone_type)
 
     pdf_path = generate_xray_report(result)
 
     return jsonify({
         "bone": result["bone"],
-        "fracture": result["fracture"],
+        "bmi": result["bmi"],
+        "bone_density": result["bone_density"],
         "osteoporosis": result["osteoporosis"],
         "future_risk": result["future_risk"],
-        "image": "/uploads/marked_xray.jpg",
+        "confidence": result["confidence"],
+        "image": "/uploads/processed_xray.jpg",
         "report": "/" + pdf_path
-    })
+    })

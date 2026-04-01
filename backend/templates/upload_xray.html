@@ -217,6 +217,19 @@ AI X-ray Bone Analysis
 
 <input type="file" id="xray" accept="image/*" required>
 
+<div style="margin-top:20px; text-align:left;">
+    <label for="bone_type" style="font-weight:bold; color:#2c3e50; display:block; margin-bottom:8px;">
+        Bone Region (Optional Smart Detection):
+    </label>
+    <select id="bone_type" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; background:white; font-size:15px; color:#2c3e50;">
+        <option value="">-- Select Manually --</option>
+        <option value="Spine">Spine</option>
+        <option value="Hip">Hip</option>
+        <option value="Wrist">Wrist</option>
+        <option value="Knee">Knee</option>
+    </select>
+</div>
+
 </div>
 
 <img id="preview">
@@ -235,114 +248,128 @@ Back to Dashboard
 
 </form>
 
-<div id="resultBox" class="result">
+    <div id="resultBox" class="result">
+        <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">
+            AI Clinical Feature Analysis
+        </h3>
 
-<h3>AI Analysis Result</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);">
+                <p><strong>Bone Type:</strong> <span id="boneType" style="color: #2980b9;">-</span></p>
+                <p><strong>Predicted BMI:</strong> <span id="predictedBmi" style="color: #27ae60;">-</span></p>
+                <p><strong>Bone Density (BMD):</strong> <span id="predictedDensity" style="color: #27ae60;">-</span></p>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05);">
+                <p><strong>Status:</strong> <span id="osteoporosis" style="font-weight: bold;">-</span></p>
+                <p><strong>Future Risk:</strong> <span id="futureRisk" style="font-weight: bold;">-</span></p>
+                <p><strong>AI Confidence:</strong> <span id="confidence" style="color: #8e44ad;">-</span></p>
+            </div>
+        </div>
 
-<p id="boneType"></p>
-<p id="osteoporosis"></p>
-<p id="fracture"></p>
-<p id="futureRisk"></p>
+        <!-- Result image removed as per user request -->
+        <!-- <img id="resultImage" style="max-width: 100%; border: 3px solid #fff; outline: 1px solid #ddd;"> -->
 
-<img id="resultImage">
-
-<div style="text-align:center">
-
-<button id="downloadXrayReport" class="download" style="display:none">
-Download X-ray Report
-</button>
-
-</div>
-
-</div>
+        <div style="text-align:center; margin-top: 25px;">
+            <button id="downloadXrayReport" class="download" style="display:none; padding:15px 30px; font-weight:bold; box-shadow: 0 4px 10px rgba(230,126,34,0.3);">
+                Download Comprehensive Report
+            </button>
+        </div>
+    </div>
 
 </div>
 
 <script>
-
 /* Show selected file */
-
 document.getElementById("xray").addEventListener("change", function(){
-
-let file=this.files[0]
-
-if(file){
-
-document.getElementById("fileText").innerText=file.name
-
-let reader=new FileReader()
-
-reader.onload=function(e){
-
-let preview=document.getElementById("preview")
-
-preview.src=e.target.result
-preview.style.display="block"
-
-}
-
-reader.readAsDataURL(file)
-
-}
-
+    let file=this.files[0]
+    if(file){
+        document.getElementById("fileText").innerText=file.name
+        let reader=new FileReader()
+        reader.onload=function(e){
+            let preview=document.getElementById("preview")
+            preview.src=e.target.result
+            preview.style.display="block"
+        }
+        reader.readAsDataURL(file)
+        
+        // Smart Recognition from filename
+        let filename = file.name.toLowerCase();
+        let boneSelect = document.getElementById("bone_type");
+        if(filename.includes("knee")) boneSelect.value = "Knee";
+        else if(filename.includes("spine")) boneSelect.value = "Spine";
+        else if(filename.includes("hip")) boneSelect.value = "Hip";
+        else if(filename.includes("wrist")) boneSelect.value = "Wrist";
+    }
 })
-
 
 /* Upload image */
-
 document.getElementById("xrayForm").addEventListener("submit", function(e){
+    e.preventDefault()
+    
+    let submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Processing AI Models...";
+    submitBtn.style.opacity = "0.7";
 
-e.preventDefault()
+    let file=document.getElementById("xray").files[0]
+    let boneType = document.getElementById("bone_type").value;
+    
+    let formData=new FormData()
+    formData.append("xray",file)
+    if(boneType) formData.append("bone_type", boneType)
 
-let file=document.getElementById("xray").files[0]
+    fetch("/analyze_xray",{
+        method:"POST",
+        body:formData
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Analyze X-ray";
+        submitBtn.style.opacity = "1";
 
-let formData=new FormData()
+        if(data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
 
-formData.append("xray",file)
+        document.getElementById("resultBox").style.display="block"
+        
+        document.getElementById("boneType").innerText = data.bone
+        document.getElementById("predictedBmi").innerText = data.bmi
+        document.getElementById("predictedDensity").innerText = data.bone_density
+        document.getElementById("osteoporosis").innerText = data.osteoporosis
+        document.getElementById("futureRisk").innerText = data.future_risk
+        document.getElementById("confidence").innerText = data.confidence
 
-fetch("/analyze_xray",{
-method:"POST",
-body:formData
+        // Color coding for status
+        let statusEl = document.getElementById("osteoporosis");
+        if(data.osteoporosis === "Normal") statusEl.style.color = "#27ae60";
+        else if(data.osteoporosis === "Osteopenia") statusEl.style.color = "#f39c12";
+        else statusEl.style.color = "#e74c3c";
+
+        // Image source update removed as per user request
+        // document.getElementById("resultImage").src=data.image+"?t="+new Date().getTime()
+        
+        let downloadBtn=document.getElementById("downloadXrayReport")
+        downloadBtn.style.display="inline-block"
+        downloadBtn.onclick=function(){
+            window.open(data.report)
+        }
+        
+        // Scroll to result
+        document.getElementById("resultBox").scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(err=>{
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Analyze X-ray";
+        submitBtn.style.opacity = "1";
+        alert("X-ray analysis failed. Please try again.")
+        console.log(err)
+    })
 })
-
-.then(res=>res.json())
-
-.then(data=>{
-
-document.getElementById("resultBox").style.display="block"
-
-document.getElementById("boneType").innerText="Detected Bone: "+data.bone
-
-document.getElementById("osteoporosis").innerText="Osteoporosis Detection: "+data.osteoporosis
-
-document.getElementById("fracture").innerText="Fracture Detection: "+data.fracture
-
-document.getElementById("futureRisk").innerText="Future Fracture Risk: "+data.future_risk
-
-document.getElementById("resultImage").src=data.image+"?t="+new Date().getTime()
-
-let downloadBtn=document.getElementById("downloadXrayReport")
-
-downloadBtn.style.display="inline-block"
-
-downloadBtn.onclick=function(){
-
-window.open(data.report)
-
-}
-
-})
-
-.catch(err=>{
-
-alert("X-ray analysis failed")
-console.log(err)
-
-})
-
-})
-
 </script>
+
 
 </body>
 

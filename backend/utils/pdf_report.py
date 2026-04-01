@@ -195,13 +195,17 @@ def generate_xray_report(data):
     y -= 25
     c.setFont("Helvetica",12)
 
-    c.drawString(60,y,f"Detected Bone: {data['bone']}")
+    c.drawString(60,y,f"Anatomical Bone Region: {data['bone']}")
     y -= 20
-    c.drawString(60,y,f"Osteoporosis Detection: {data['osteoporosis']}")
+    c.drawString(60,y,f"Predicted BMI: {data['bmi']}")
     y -= 20
-    c.drawString(60,y,f"Fracture Detection: {data['fracture']}")
+    c.drawString(60,y,f"Predicted Bone Density (BMD): {data['bone_density']}")
+    y -= 20
+    c.drawString(60,y,f"Bone Health Status: {data['osteoporosis']}")
     y -= 20
     c.drawString(60,y,f"Future Fracture Risk: {data['future_risk']}")
+    y -= 20
+    c.drawString(60,y,f"Confidence Level: {data['confidence']}")
 
     y -= 30
 
@@ -228,4 +232,4 @@ def generate_xray_report(data):
 
     c.save()
 
-    return filepath
+    return filepath
