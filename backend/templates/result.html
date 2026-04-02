@@ -113,27 +113,18 @@ background:#c0392b;
 }
 
 </style>
-
 </head>
-
 <body>
-
 <header>
 <h1>Osteoporosis Prediction Result</h1>
 </header>
-
 <div class="container">
-
 <h2>AI Prediction</h2>
-
 <div id="boneChecked" style="font-weight:bold;margin-top:10px;"></div>
-
 <div id="predictionBox" class="result-box">
 Loading...
 </div>
-
 <div id="fractureBox" class="fracture-box"></div>
-
 <div class="logout-container">
 <a href="/logout">
 <button class="logout-btn">Logout</button>
@@ -141,53 +132,35 @@ Loading...
 </div>
 
 <!-- Disease Detection -->
-
 <div class="multi-bone">
-
 <h3>Detected Bone Diseases</h3>
-
 <ul id="diseaseList"></ul>
-
 </div>
 
-
 <!-- Multi Bone Analysis -->
-
 <div class="multi-bone">
-
 <h3>Multi-Bone Analysis</h3>
-
 <ul>
 <li>Hip: <span id="hipRisk">-</span></li>
 <li>Spine: <span id="spineRisk">-</span></li>
 <li>Wrist: <span id="wristRisk">-</span></li>
 <li>Knee: <span id="kneeRisk">-</span></li>
 </ul>
-
 <h4 id="overallBoneHealth"></h4>
-
 </div>
 
-
 <!-- Buttons -->
-
 <button class="download-btn" onclick="downloadReport()">
 Download Medical Report
 </button>
-
 <br>
-
 <button onclick="goDashboard()">Back to Dashboard</button>
-
 </div>
-
-
 <script>
 
 function goDashboard(){
 window.location="/dashboard";
 }
-
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -199,52 +172,38 @@ let box = document.getElementById("predictionBox");
 let fractureBox = document.getElementById("fractureBox");
 
 /* Bone checked */
-
 if(selectedBone){
 document.getElementById("boneChecked").innerText =
 "Bone Checked: " + selectedBone;
 }
 
 /* Prediction */
-
 if(result){
-
 box.innerText = result;
-
 if(result.includes("High")){
 box.classList.add("high-risk");
 }else{
 box.classList.add("low-risk");
 }
-
 }else{
 box.innerText = "Prediction not available";
 }
 
 /* Fracture risk */
-
 if(fracture){
 fractureBox.innerText = "Future Fracture Risk: " + fracture;
 }
 
 /* Disease detection */
-
 let diseases = JSON.parse(localStorage.getItem("boneDiseases") || "[]");
-
 let diseaseList = document.getElementById("diseaseList");
-
 if(diseases.length > 0){
-
 diseaseList.innerHTML="";
-
 diseases.forEach(function(d){
-
 let li = document.createElement("li");
 li.innerText = d;
 diseaseList.appendChild(li);
-
 });
-
 }else{
 
 let li = document.createElement("li");
@@ -272,7 +231,6 @@ document.getElementById("overallBoneHealth").innerText =
 }
 
 /* Highlight selected bone */
-
 let boneMap = {
 "Hip":"hipRisk",
 "Spine":"spineRisk",
@@ -281,23 +239,16 @@ let boneMap = {
 };
 
 if(selectedBone && boneMap[selectedBone]){
-
 let element = document.getElementById(boneMap[selectedBone]);
-
 element.style.fontWeight="bold";
 element.style.color="#e74c3c";
 
 }
-
 });
 
-
 /* Download report */
-
 function downloadReport(){
-
 fetch("/download_patient_report",{
-
 method:"POST",
 
 headers:{
@@ -318,29 +269,17 @@ calcium: localStorage.getItem("calcium"),
 vitamin_d: localStorage.getItem("vitaminD"),
 
 diseases: JSON.parse(localStorage.getItem("boneDiseases") || "[]")
-
 })
-
 })
-
 .then(res => res.json())
-
 .then(data => {
-
 window.open(data.report)
-
 })
-
 .catch(err => {
-
 alert("Report generation failed")
 console.log(err)
-
 })
-
 }
-
 </script>
-
 </body>
 </html>
