@@ -62,4 +62,4 @@ def predict_bone_diseases(features):
         1: ["Osteoporosis", "High Bone Loss Risk"],
         0: ["No major bone disease detected"]
     }
-    return diseases.get(pred)
+    return diseases.get(pred)

@@ -205,6 +205,8 @@ def generate_xray_report(data):
     y -= 20
     c.drawString(60,y,f"Future Fracture Risk: {data['future_risk']}")
     y -= 20
+    c.drawString(60,y,f"Fracture Detection: {data['fracture_status']} ({data['fracture_confidence']})")
+    y -= 20
     c.drawString(60,y,f"Confidence Level: {data['confidence']}")
 
     y -= 30

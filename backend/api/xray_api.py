@@ -38,6 +38,8 @@ def analyze():
         "bone_density": result["bone_density"],
         "osteoporosis": result["osteoporosis"],
         "future_risk": result["future_risk"],
+        "fracture_status": result["fracture_status"],
+        "fracture_confidence": result["fracture_confidence"],
         "confidence": result["confidence"],
         "image": "/uploads/processed_xray.jpg",
         "report": "/" + pdf_path
